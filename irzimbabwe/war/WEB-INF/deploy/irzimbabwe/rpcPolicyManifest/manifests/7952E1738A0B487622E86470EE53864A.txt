@@ -1,0 +1,2 @@
+serviceClass: org.irdresearch.irzimbabwe.client.ServerService
+path: A93EFDD4838B31F70C3F5F3951A4EBFA.gwt.rpc
