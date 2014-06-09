@@ -3,6 +3,7 @@ package org.irdresearch.irzimbabwe.client;
 
 import org.irdresearch.irzimbabwe.shared.Parameter;
 import org.irdresearch.irzimbabwe.shared.model.*;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -55,9 +56,13 @@ public interface ServerService extends RemoteService
 	Boolean deleteUserRights (UserRights userRights) throws Exception;
 
 	Boolean deleteVisit (Visit visit) throws Exception;
+	
+	Boolean deleteVisits(Visit[] visit) throws Exception;
 
 	/* Find methods */
 	Definition findDefinition (String definitionType, String definitionKey) throws Exception;
+	
+	String findDiseaseConfirmed(String patientId);
 
 	Encounter findEncounter (EncounterId encounterID) throws Exception;
 
@@ -101,7 +106,7 @@ public interface ServerService extends RemoteService
 
 	SmsText[] findSmsTextByRule (String ruleId) throws Exception;
 
-	SmsText findSmsTextByLanguage (String ruleId, int languageId) throws Exception;
+	SmsText findSmsTextByLanguage (String ruleId, String preferredLanguageId) throws Exception;
 
 	SputumTest findSputumTest (String patientId, Integer sampleNo) throws Exception;
 
@@ -113,7 +118,12 @@ public interface ServerService extends RemoteService
 
 	UserRights findUserRights (String roleName, String menuName) throws Exception;
 
-	Visit findVisit (String patientId) throws Exception;
+	Visit findParticularVisit(String patientId, String visitPurpose) throws Exception;
+	
+	Visit findVisit(String patientId) throws Exception;
+	
+	Visit[] findAllVisits(String patient_id) throws Exception;
+	
 
 	/* Save methods */
 	Boolean saveDefinition (Definition definition) throws Exception;
@@ -259,8 +269,7 @@ public interface ServerService extends RemoteService
 
 	void setCurrentUser (String userName, String role) throws Exception;
 
-	/* Form submission methods */
-	String saveVisitPurpose (Visit visit, Patient patient, Encounter encounter, EncounterResults[] array);
+	String saveVisitPurpose(Visit[] visits, Patient patient, Encounter encounter, EncounterResults[] array);
 
 	String saveClientDemographics (Person person, Encounter encounter, EncounterResults[] encounterResults);
 
@@ -272,7 +281,7 @@ public interface ServerService extends RemoteService
 
 	String saveSputumRegistration (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults);
 
-	String saveSmearResult (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults);
+	String saveSmearResult (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults, boolean enableClientSms);
 
 	String checkForGeneXpertTest (String patientId);
 
@@ -289,4 +298,6 @@ public interface ServerService extends RemoteService
 	String saveVisitIndication (Encounter encounter, EncounterResults[] encounterResults);
 
 	String savePatientEdit (String query, Encounter encounter, EncounterResults[] encounterResults);
+
+	
 }

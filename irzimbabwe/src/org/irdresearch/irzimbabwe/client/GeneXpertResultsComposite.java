@@ -3,6 +3,7 @@ package org.irdresearch.irzimbabwe.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.irdresearch.irzimbabwe.shared.AccessType;
 import org.irdresearch.irzimbabwe.shared.CustomMessage;
 import org.irdresearch.irzimbabwe.shared.DateTimeUtil;
@@ -16,11 +17,13 @@ import org.irdresearch.irzimbabwe.shared.model.EncounterResults;
 import org.irdresearch.irzimbabwe.shared.model.EncounterResultsId;
 import org.irdresearch.irzimbabwe.shared.model.SputumTest;
 import org.irdresearch.irzimbabwe.shared.model.User;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -29,15 +32,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Gene Xpert Results form
@@ -200,11 +202,15 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 		/* Validate mandatory fields */
 		if (samplesListBox.getItemCount () == 0)
 			errorMessage.append ("Sample No.: " + CustomMessage.getErrorMessage (ErrorType.EMPTY_DATA_ERROR) + "\n");
-		if (dateTestedDateBox.getTextBox ().getText ().equals (""))
+		else if(gxpResultComboBox.getSelectedIndex()==-1)
+		    errorMessage.append ("GXP Result cannot be empty:-\n" + CustomMessage.getErrorMessage (ErrorType.EMPTY_DATA_ERROR) + "\n");
+		else if (dateTestedDateBox.getTextBox ().getText ().equals (""))
 			errorMessage.append ("GXP Test date: " + CustomMessage.getErrorMessage (ErrorType.EMPTY_DATA_ERROR) + "\n");
-		if (DateTimeUtil.isFutureDate (dateTestedDateBox.getValue ()))
+		else if(rifResistanceComboBox.getSelectedIndex()== -1 && gxpResultComboBox.getSelectedIndex()==0)
+		    errorMessage.append ("RIF Resistance: " + CustomMessage.getErrorMessage (ErrorType.EMPTY_DATA_ERROR) + "\n");
+		else if (!dateTestedDateBox.getTextBox ().getText ().equals ("") && DateTimeUtil.isFutureDate (dateTestedDateBox.getValue ()))
 			errorMessage.append ("GXP Test date: " + CustomMessage.getErrorMessage (ErrorType.INVALID_DATA_ERROR) + "\n");
-		if (DateTimeUtil.compareDateOnly (dateTestedDateBox.getValue (), currentTest.getDateCollected ()) < 0)
+		else if (!dateTestedDateBox.getTextBox ().getText ().equals ("") && DateTimeUtil.compareDateOnly (dateTestedDateBox.getValue (), currentTest.getDateCollected ()) < 0)
 			errorMessage.append ("GXP Test date cannot be before date of Collection." + "\n");
 		valid = errorMessage.length () == 0;
 		if (!valid)
@@ -267,8 +273,10 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 				public void onFailure (Throwable caught)
 				{
 					caught.printStackTrace ();
+					load(false);
 				}
 			});
+			
 		}
 	}
 
@@ -394,13 +402,14 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 		else if (sender == saveButton)
 		{
 			// If the ID has not been checked, then return
-			if (currentTest == null || clientId == "")
+			if (clientId == "" ||currentTest == null )
 			{
 				Window.alert ("Please first check Client's ID and then select a sample from the list of registered samples.");
 				load (false);
 				return;
 			}
 			saveData ();
+			load (false);
 		}
 		else if (sender == closeButton)
 		{
@@ -414,7 +423,7 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 		Widget sender = (Widget) event.getSource ();
 		if (sender == samplesListBox)
 		{
-			Integer sampleId = Integer.parseInt (IRZClient.get (samplesListBox));
+		    Integer sampleId = Integer.parseInt (IRZClient.get (samplesListBox));
 			try
 			{
 				service.findSputumTest (clientId, sampleId, new AsyncCallback<SputumTest> ()
@@ -431,6 +440,7 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 					public void onFailure (Throwable caught)
 					{
 						caught.printStackTrace ();
+						load(false);
 					}
 				});
 			}
@@ -438,6 +448,7 @@ public class GeneXpertResultsComposite extends Composite implements ClickHandler
 			{
 				e.printStackTrace ();
 			}
+		    
 		}
 		else if (sender == gxpResultComboBox)
 		{

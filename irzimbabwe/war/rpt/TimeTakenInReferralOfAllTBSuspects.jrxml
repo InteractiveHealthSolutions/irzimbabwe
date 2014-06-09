@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PieChartDemoReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="countOfReferrals">
+		<queryString>
+			<![CDATA[SELECT
+(case when (subSet.days_taken <= 5) then 'Within 5 days'
+else
+(case when (subSet.days_taken > 5) then 'More than 5 days'
+else
+(case when (subSet.days_taken is null) then 'Not yet referred'
+else 'N/A' end)
+end)end) as referralTypes,
+
+(case when (subSet.days_taken <= 5) then SUM(subSet.days_taken <= 5)
+else
+(case when (subSet.days_taken > 5) then SUM(subSet.days_taken > 5)
+else
+(case when (subSet.days_taken is null) then SUM(subSet.date_referred IS NULL)
+else 0 end)
+end)end) as countOfClients
+
+FROM (select p.patient_id,
+               (CASE
+                 WHEN st.smear_result <> 'NEGATIVE' OR st.gxp_result = 'MTB+' THEN (DATEDIFF(r.date_referred, MIN(st.date_smear_tested)))
+                 ELSE
+                  (CASE
+                 WHEN st.smear_result = 'NEGATIVE' OR st.gxp_result = 'MTB-' THEN  (DATEDIFF(r.date_referred, MAX(st.date_smear_tested)))
+
+                END) END) as days_taken,
+                r.date_referred as date_referred
+          from patient as p
+          left outer join sputum_test as st on p.patient_id = st.patient_id
+          left outer join referral as r on r.patient_id = st.patient_id
+         where p.suspected_by is not null
+           and (p.patient_status = 'SUSPECT' or
+               p.patient_status = 'CONFIRMED')
+         group by p.patient_id)
+         as subSet
+
+         group by referralTypes;]]>
+		</queryString>
+		<field name="referralTypes" class="java.lang.String"/>
+		<field name="countOfClients" class="java.math.BigDecimal"/>
+	</subDataset>
+	<queryString>
+		<![CDATA[SELECT
+(case when (subSet.days_taken <= 5) then 'Within 5 days'
+else
+(case when (subSet.days_taken > 5) then 'More than 5 days'
+else
+(case when (subSet.days_taken is null) then 'Not yet referred'
+else 'N/A' end)
+end)end) as referralTypes,
+
+(case when (subSet.days_taken <= 5) then SUM(subSet.days_taken <= 5)
+else
+(case when (subSet.days_taken > 5) then SUM(subSet.days_taken > 5)
+else
+(case when (subSet.days_taken is null) then SUM(subSet.date_referred IS NULL)
+else 0 end)
+end)end) as countOfClients
+
+FROM (select p.patient_id,
+               (CASE
+                 WHEN st.smear_result <> 'NEGATIVE' OR st.gxp_result = 'MTB+' THEN (DATEDIFF(r.date_referred, MIN(st.date_smear_tested)))
+                 ELSE
+                  (CASE
+                 WHEN st.smear_result = 'NEGATIVE' OR st.gxp_result = 'MTB-' THEN  (DATEDIFF(r.date_referred, MAX(st.date_smear_tested)))
+
+                END) END) as days_taken,
+                r.date_referred as date_referred
+          from patient as p
+          left outer join sputum_test as st on p.patient_id = st.patient_id
+          left outer join referral as r on r.patient_id = st.patient_id
+         where p.suspected_by is not null
+           and (p.patient_status = 'SUSPECT' or
+               p.patient_status = 'CONFIRMED')
+         group by p.patient_id)
+         as subSet
+
+         group by referralTypes;]]>
+	</queryString>
+	<field name="referralTypes" class="java.lang.String"/>
+	<field name="countOfClients" class="java.math.BigDecimal"/>
+	<variable name="more_than_5" class="java.lang.String"/>
+	<variable name="within5days" class="java.lang.String"/>
+	<variable name="not_referred" class="java.lang.String"/>
+	<title>
+		<band height="63">
+			<staticText>
+				<reportElement x="91" y="0" width="378" height="51"/>
+				<textElement lineSpacing="Single">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Time taken in referrals of all TB suspects]]></text>
+			</staticText>
+		</band>
+	</title>
+	<lastPageFooter>
+		<band height="50">
+			<image>
+				<reportElement x="0" y="0" width="91" height="50"/>
+				<imageExpression class="java.lang.String"><![CDATA["/var/lib/tomcat6/webapps/irzimbabwe/psiLogo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="374" y="30" width="76" height="20"/>
+				<textElement lineSpacing="Single">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Date Printed:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="450" y="30" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="378">
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="0" y="0" width="555" height="378"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{referralTypes}]]></keyExpression>
+					<valueExpression><![CDATA[$F{countOfClients}]]></valueExpression>
+					<sectionHyperlink/>
+				</pieDataset>
+				<piePlot labelFormat="{2}">
+					<plot/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>

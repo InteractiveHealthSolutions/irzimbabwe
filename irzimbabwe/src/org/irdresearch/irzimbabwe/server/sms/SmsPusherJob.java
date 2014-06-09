@@ -2,10 +2,12 @@ package org.irdresearch.irzimbabwe.server.sms;
 
 import java.util.TimerTask;
 
+import org.irdresearch.irzimbabwe.server.ServerServiceImpl;
 import org.irdresearch.irzimbabwe.server.util.HibernateUtil;
 import org.irdresearch.irzimbabwe.shared.IRZ;
 import org.irdresearch.irzimbabwe.shared.SmsRuleParam;
 import org.irdresearch.irzimbabwe.shared.SmsStatus;
+import org.irdresearch.irzimbabwe.shared.model.Person;
 import org.irdresearch.irzimbabwe.shared.model.SmsLog;
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
@@ -15,6 +17,7 @@ import org.irdresearch.smstarseel.data.OutboundMessage.Priority;
 import com.mysql.jdbc.StringUtils;
 
 public class SmsPusherJob extends TimerTask{
+	private static ServerServiceImpl ssl = new ServerServiceImpl();
 
 	public SmsPusherJob() {
 	}
@@ -22,7 +25,7 @@ public class SmsPusherJob extends TimerTask{
 	@Override
 	public void run() {
 		try{
-			System.out.println("SmsPusherJob Running");
+		//	System.out.println("SmsPusherJob Running");
 			Object[] objs = HibernateUtil.util.findObjects("FROM SmsLog WHERE status='"+SmsStatus.PENDING+"' AND DATE(dateDue) <= CURDATE()");
 	
 			for (Object object : objs) {
@@ -42,7 +45,9 @@ public class SmsPusherJob extends TimerTask{
 				}
 				
 				if(sms.getText() == null && sms.getRecipientReferenceTable().equalsIgnoreCase(SmsRuleParam.ReferenceTableClientSms)){
-					String text = SmsUtil.insertClientInfoInSmsText(SmsUtil.findText(sms.getRuleId()), sms.getRecipientId(), null);
+					Person person=ssl.findPerson(sms.getRecipientId());
+					String langId=person.getPreferredLanguage();
+					String text = SmsUtil.insertClientInfoInSmsText(SmsUtil.findText(sms.getRuleId(),langId), sms.getRecipientId(), null);
 					sms.setText(text);
 				}
 				
@@ -71,7 +76,7 @@ public class SmsPusherJob extends TimerTask{
 			
 				HibernateUtil.util.update(sms);
 			}
-			System.out.println("SmsPusherJob Ran Successfully");
+		//	System.out.println("SmsPusherJob Ran Successfully");
 		}
 		catch (Exception e) {
 			e.printStackTrace();

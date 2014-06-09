@@ -56,13 +56,15 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 	private FlexTable					flexTable						= new FlexTable ();
 	private FlexTable					topFlexTable					= new FlexTable ();
 	private FlexTable					rightFlexTable					= new FlexTable ();
+
 	private Grid						grid							= new Grid (1, 2);
 	private HorizontalPanel				genderHorizontalPanel			= new HorizontalPanel ();
 
 	private Button						saveButton						= new Button ("Save");
 	private Button						closeButton						= new Button ("Close");
 
-	private Label						lblClientsInitialDemographics	= new Label ("Client's Initial Demographics Form");
+	private Label						lblClientsInitialDemographics	= new Label (
+																				"Client's Initial Demographics Form");
 	private Label						lblClientsId					= new Label ("Client's ID:");
 	private Label						lblFirstName					= new Label ("First Name:");
 	private Label						lblLastName						= new Label ("Last Name:");
@@ -109,7 +111,8 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 		genderHorizontalPanel.add (maleRadioButton);
 		genderHorizontalPanel.add (femaleRadioButton);
 		rightFlexTable.setWidget (4, 0, lblAge);
-		ageIntegerBox.setVisibleLength (2);
+		ageIntegerBox.setVisibleLength (3);
+		ageIntegerBox.setMaxLength (3);
 		rightFlexTable.setWidget (4, 1, ageIntegerBox);
 		rightFlexTable.setWidget (5, 0, lblDateOfBirth);
 		dobDateBox.setFormat (new DefaultFormat (DateTimeFormat.getFormat ("yyyy-MM-dd")));
@@ -167,8 +170,10 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 		valid = true;
 		StringBuilder errorMessage = new StringBuilder ();
 		/* Validate mandatory fields */
-		Widget[] mandatory = {clientIdTextBox, firstNameTextBox, lastNameTextBox, ageIntegerBox, dobDateBox.getTextBox ()};
-		for (int i = 0; i < mandatory.length; i++)
+		Widget[] mandatory = {clientIdTextBox, firstNameTextBox, lastNameTextBox, ageIntegerBox,
+				dobDateBox.getTextBox ()};
+		int i;
+		for (i = 0; i < mandatory.length; i++)
 		{
 			if (IRZClient.get (mandatory[i]).equals (""))
 			{
@@ -176,11 +181,17 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 				break;
 			}
 		}
-		if (ageIntegerBox.getValue () < 0 || ageIntegerBox.getValue () > 150 || DateTimeUtil.isFutureDate (dobDateBox.getValue ()))
+		if (errorMessage.length () == 0)
 		{
-			errorMessage.append ("Age/Date of Birth: " + CustomMessage.getErrorMessage (ErrorType.INVALID_DATA_ERROR) + "\n");
+			if (ageIntegerBox.getValue () < 0 || ageIntegerBox.getValue () > 127
+					|| DateTimeUtil.isFutureDate (dobDateBox.getValue ()))
+			{
+				errorMessage.append ("Age/Date of Birth: " + CustomMessage.getErrorMessage
+
+				(ErrorType.INVALID_DATA_ERROR) + "\n");
+			}
 		}
-		valid = errorMessage.length () == 0;
+		valid = (errorMessage.length () == 0);
 		if (!valid)
 		{
 			Window.alert (errorMessage.toString ());
@@ -191,60 +202,77 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 
 	public void saveData ()
 	{
-		if (validate ())
+		Date enteredDate = new Date ();
+		int eId = 0;
+		String clientId = IRZClient.get (clientIdTextBox).toUpperCase ();
+		String pid2 = IRZ.getCurrentUserName ();
+		String firstName = IRZClient.get (firstNameTextBox).toUpperCase ();
+		String lastName = IRZClient.get (lastNameTextBox).toUpperCase ();
+		String age = IRZClient.get (ageIntegerBox);
+		String gender = maleRadioButton.getValue () ? "M" : "F";
+		String dob = DateTimeUtil.getFormattedDate (dobDateBox.getValue (),
+
+		DateTimeUtil.SQL_DATETIME);
+
+		EncounterId encounterId = new EncounterId (0, clientId, pid2, formName);
+		Encounter encounter = new Encounter (encounterId, "");
+		encounter.setLocationId (IRZ.getCurrentLocation ());
+		encounter.setDateEntered (enteredDate);
+		encounter.setDateStart (new Date ());
+		encounter.setDateEnd (new Date ());
+		ArrayList<EncounterResults> encounterResults = new ArrayList<EncounterResults>
+
+		();
+		encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+
+		"F_NAME"), firstName));
+		encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+
+		"L_NAME"), lastName));
+		encounterResults.add (new EncounterResults (new EncounterResultsId (eId,
+
+		clientId, pid2, formName, "AGE"), age));
+		encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+
+		"GENDER"), gender));
+		encounterResults.add (new EncounterResults (new EncounterResultsId (eId,
+
+		clientId, pid2, formName, "DOB"), dob));
+		Person person = new Person (clientId, firstName);
+		person.setLastName (lastName);
+		person.setApproximateAge (ageIntegerBox.getValue ());
+		person.setDob (dobDateBox.getValue ());
+		person.setGender (gender);
+		person.setPreferredLanguage ("ENG");
+		service.saveClientDemographics (person, encounter, encounterResults.toArray (new
+
+		EncounterResults[] {}), new AsyncCallback<String> ()
 		{
-			Date enteredDate = new Date ();
-			int eId = 0;
-			String clientId = IRZClient.get (clientIdTextBox).toUpperCase ();
-			String pid2 = IRZ.getCurrentUserName ();
-			String firstName = IRZClient.get (firstNameTextBox).toUpperCase ();
-			String lastName = IRZClient.get (lastNameTextBox).toUpperCase ();
-			String age = IRZClient.get (ageIntegerBox);
-			String gender = maleRadioButton.getValue () ? "M" : "F";
-			String dob = DateTimeUtil.getFormattedDate (dobDateBox.getValue (), DateTimeUtil.SQL_DATETIME);
-
-			EncounterId encounterId = new EncounterId (0, clientId, pid2, formName);
-			Encounter encounter = new Encounter (encounterId, "");
-			encounter.setLocationId (IRZ.getCurrentLocation ());
-			encounter.setDateEntered (enteredDate);
-			encounter.setDateStart (new Date ());
-			encounter.setDateEnd (new Date ());
-			ArrayList<EncounterResults> encounterResults = new ArrayList<EncounterResults> ();
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "F_NAME"), firstName));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "L_NAME"), lastName));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "AGE"), age));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "GENDER"), gender));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "DOB"), dob));
-			Person person = new Person (clientId, firstName);
-			person.setLastName (lastName);
-			person.setApproximateAge (ageIntegerBox.getValue ());
-			person.setDob (dobDateBox.getValue ());
-			person.setGender (gender);
-
-			service.saveClientDemographics (person, encounter, encounterResults.toArray (new EncounterResults[] {}), new AsyncCallback<String> ()
+			public void onSuccess (String result)
 			{
-				public void onSuccess (String result)
+				if (result.equals ("SUCCESS"))
 				{
-					if (result.equals ("SUCCESS"))
-					{
-						Window.alert (CustomMessage.getInfoMessage (InfoType.INSERTED));
-						clearUp ();
-						load (false);
-					}
-					else
-					{
-						Window.alert (CustomMessage.getErrorMessage (ErrorType.INSERT_ERROR) + "\nDetails: " + result);
-						load (false);
-					}
-				}
+					Window.alert
 
-				public void onFailure (Throwable caught)
-				{
-					caught.printStackTrace ();
+					(CustomMessage.getInfoMessage (InfoType.INSERTED));
+					clearUp ();
 					load (false);
 				}
-			});
-		}
+				else
+				{
+					Window.alert
+
+					(CustomMessage.getErrorMessage (ErrorType.INSERT_ERROR) + "\nDetails: " + result);
+					load (false);
+				}
+			}
+
+			public void onFailure (Throwable caught)
+			{
+				caught.printStackTrace ();
+				load (false);
+			}
+		});
 	}
 
 	/**
@@ -258,7 +286,9 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 		try
 		{
 			load (true);
-			service.getUserRgihts (IRZ.getCurrentUserName (), IRZ.getCurrentRole (), menuName, new AsyncCallback<Boolean[]> ()
+			service.getUserRgihts (IRZ.getCurrentUserName (), IRZ.getCurrentRole (),
+
+			menuName, new AsyncCallback<Boolean[]> ()
 			{
 				public void onSuccess (Boolean[] result)
 				{
@@ -269,19 +299,35 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 						{
 							public void onSuccess (User result)
 							{
-								rights.setRoleRights (IRZ.getCurrentRole (), userRights);
-								boolean hasAccess = rights.getAccess (AccessType.INSERT) | rights.getAccess (AccessType.UPDATE) | rights.getAccess (AccessType.DELETE)
-										| rights.getAccess (AccessType.SELECT);
+								rights.setRoleRights
+
+								(IRZ.getCurrentRole (), userRights);
+								boolean hasAccess =
+
+								rights.getAccess (AccessType.INSERT) |
+
+								rights.getAccess (AccessType.UPDATE) |
+
+								rights.getAccess (AccessType.DELETE) |
+
+								rights.getAccess (AccessType.SELECT);
 								if (!hasAccess)
 								{
-									Window.alert (CustomMessage.getErrorMessage (ErrorType.DATA_ACCESS_ERROR));
+									Window.alert
+
+									(CustomMessage.getErrorMessage (ErrorType.DATA_ACCESS_ERROR));
+
 									MainMenuComposite.clear ();
 								}
-								saveButton.setEnabled (rights.getAccess (AccessType.INSERT));
+								saveButton.setEnabled
+
+								(rights.getAccess (AccessType.INSERT));
 								load (false);
 							}
 
-							public void onFailure (Throwable caught)
+							public void onFailure (Throwable
+
+							caught)
 							{
 								load (false);
 							}
@@ -311,33 +357,72 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 	{
 		Widget sender = (Widget) event.getSource ();
 		load (true);
+
 		if (sender == saveButton)
 		{
 			try
 			{
-				service.exists ("patient", "patient_id='" + IRZClient.get (clientIdTextBox) + "'", new AsyncCallback<Boolean> ()
+				if (validate ())
 				{
-					public void onSuccess (Boolean result)
-					{
-						if (result)
-							saveData ();
-						else
-						{
-							Window.alert (CustomMessage.getErrorMessage (ErrorType.ITEM_NOT_FOUND) + "\nPlease make sure you have entered correct Client ID.");
-							load (false);
-						}
-					}
+					service.exists ("patient", "patient_id='" + IRZClient.get (clientIdTextBox) + "'",
+							new AsyncCallback<Boolean> ()
+							{
+								public void onSuccess (Boolean result)
+								{
+									if (result)
+									{
+										try
+										{
+											service.exists ("person", "pid='" + IRZClient.get (clientIdTextBox) + "'",
+													new AsyncCallback<Boolean> ()
+													{
+														public void onSuccess (Boolean result)
+														{
+															if (result)
+															{
+																boolean answer = Window
+																		.confirm ("Client Information Already exists! Are you sure you want to update?");
+																if (!answer)
+																{
+																	load (false);
+																	return;
+																}
+															}
+															saveData ();
+															clearUp ();
+														}
 
-					public void onFailure (Throwable caught)
-					{
-						load (false);
-					}
-				});
+														public void onFailure (Throwable caught)
+														{
+															caught.printStackTrace ();
+														}
+													});
+										}
+										catch (Exception e)
+										{
+											e.printStackTrace ();
+										}
+									}
+									else
+									{
+										Window.alert (CustomMessage.getErrorMessage (ErrorType.ITEM_NOT_FOUND)
+												+ "\nPlease make sure you have entered correct Client ID.");
+										load (false);
+									}
+								}
+
+								public void onFailure (Throwable caught)
+								{
+									load (false);
+								}
+							});
+
+				}
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace ();
-				load (true);
+				load (false);
 			}
 		}
 		else if (sender == closeButton)

@@ -23,6 +23,8 @@ public class SmsTest {
 	
 	@Test
 	public void responseTest(){
+		String text = "C1121000013     26NOV2012  Y   ;  P9121000016    26NOV2012 Y   ;";
+
 		//new ResponseReaderJob().visitedCommandReceived(SmsRuleParam.ReferenceTableTreatmentSiteSms, SmsRuleParam.ReferenceColumnTreatmentSiteSms, "G1", "0334", text);
 		new ResponseReaderJob().run();
 	}

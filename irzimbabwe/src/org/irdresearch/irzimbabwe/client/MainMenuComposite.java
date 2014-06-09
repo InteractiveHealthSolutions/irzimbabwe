@@ -26,7 +26,7 @@ public class MainMenuComposite extends Composite
 	private static SimplePanel		loadingPanel					= new SimplePanel ();
 	private SimplePanel				inquiryCompositePanel			= new SimplePanel ();
 	private InquiryComposite		inquiryComposite				= new InquiryComposite ();
-
+	private ClientProfilePopup		clientProfile					=new ClientProfilePopup();
 	private Label					lblVisitorInquiryForm			= new Label ("Visitor Inquiry Form");
 
 	private MenuBar					mainMenuBar						= new MenuBar (false);
@@ -57,7 +57,7 @@ public class MainMenuComposite extends Composite
 	private MenuItem				visitPurposeMenuItem			= new MenuItem ("Client's Purpose of Visit", false, (Command) null);
 	private MenuItem				clientDemographicsMenuItem		= new MenuItem ("Client's Demographics", false, (Command) null);
 	private MenuItem				tbScreeningMenuItem				= new MenuItem ("TB Screening Results", false, (Command) null);
-	private MenuItem				registrationMenuItem			= new MenuItem ("TB/MC Registration", false, (Command) null);
+	private MenuItem				registrationMenuItem			= new MenuItem ("Client Registration Form", false, (Command) null);
 	private MenuItem				sputumCollectionMenuItem		= new MenuItem ("Sputum Collection", false, (Command) null);
 	private MenuItem				sputumRegistrationMenuItem		= new MenuItem ("Sputum Registration", false, (Command) null);
 	private MenuItem				smearResultsMenuItem			= new MenuItem ("Smear Results", false, (Command) null);
@@ -121,6 +121,9 @@ public class MainMenuComposite extends Composite
 		helpMenuBar.setAnimationEnabled (true);
 		inquiryComposite.setWidth ("100%");
 		inquiryCompositePanel.setWidget (inquiryComposite.asWidget ());
+		clientProfile.setWidth("100%");
+		
+		
 		loadingPanel.add (new LoadingWidget ().asWidget ());
 		mainFlexTable.getCellFormatter ().setHorizontalAlignment (1, 0, HasHorizontalAlignment.ALIGN_LEFT);
 		mainFlexTable.getCellFormatter ().setHorizontalAlignment (0, 0, HasHorizontalAlignment.ALIGN_LEFT);
@@ -489,7 +492,7 @@ public class MainMenuComposite extends Composite
 				IRZimbabwe.logout ();
 			}
 		});
-
+		
 		mainMenuBar.addItem (setupMenuItem);
 		mainMenuBar.addItem (formsMenuItem);
 		mainMenuBar.addItem (reportingMenuItem);
@@ -539,6 +542,7 @@ public class MainMenuComposite extends Composite
 		helpMenuBar.addItem (aboutMenuItem);
 		helpMenuBar.addItem (feedbackMenuItem);
 		helpMenuBar.addItem (helpContentsMenuItem);
+		
 		hideLoading ();
 	}
 

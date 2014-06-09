@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PieChartDemoReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="LessThan5Days">
+		<queryString>
+			<![CDATA[SELECT
+(CASE WHEN s.smear_result <> 'NEGATIVE' OR s.gxp_result='MTB+'
+            THEN DATEDIFF(r.date_referred,MIN(s.date_smear_tested))
+            ELSE
+            (CASE WHEN s.smear_result='NEGATIVE' OR s.gxp_result='MTB-'
+            THEN DATEDIFF(r.date_referred,MAX(s.date_smear_tested))
+            ELSE 'Not available' end )END) AS TimeTakenInReferral,
+            r.reason as Reason
+FROM
+sputum_test s INNER JOIN referral r ON s.patient_id = r.patient_id
+GROUP BY
+    s.patient_id
+Having TimeTakenInReferral <= 5;]]>
+		</queryString>
+		<field name="TimeTakenInReferral" class="java.lang.Object">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="Reason" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="GreaterThan5Days">
+		<queryString language="SQL">
+			<![CDATA[SELECT
+    s.patient_id AS ClientId,
+    r.date_referred AS DateOfReferral,
+(CASE WHEN s.smear_result <> 'NEGATIVE' OR s.gxp_result='MTB+'
+            THEN DATEDIFF(r.date_referred,MIN(s.date_smear_tested))
+            ELSE
+            (CASE WHEN s.smear_result='NEGATIVE' OR s.gxp_result='MTB-'
+            THEN DATEDIFF(r.date_referred,MAX(s.date_smear_tested))
+            ELSE 'Not available' end )END) AS TimeTakenInReferral,
+            r.reason as Reason
+FROM
+sputum_test s INNER JOIN referral r ON s.patient_id = r.patient_id
+GROUP BY
+    s.patient_id
+Having TimeTakenInReferral > 5;]]>
+		</queryString>
+		<field name="ClientId" class="java.lang.String"/>
+		<field name="DateOfReferral" class="java.sql.Timestamp"/>
+		<field name="TimeTakenInReferral" class="java.lang.Object">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="Reason" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString>
+		<![CDATA[select count(*),hiv_status from patient where hiv_status is not null or hiv_status <> '' group by hiv_status;]]>
+	</queryString>
+	<field name="count(*)" class="java.lang.Long"/>
+	<field name="hiv_status" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<title>
+		<band height="95">
+			<staticText>
+				<reportElement x="152" y="0" width="228" height="36"/>
+				<textElement lineSpacing="Single">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[HIV status of all patients]]></text>
+			</staticText>
+		</band>
+	</title>
+	<lastPageFooter>
+		<band height="50">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="455" y="30" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="379" y="30" width="76" height="20"/>
+				<textElement lineSpacing="Single">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Date Printed:]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="91" height="50"/>
+				<imageExpression class="java.lang.String"><![CDATA["/var/lib/tomcat6/webapps/irzimbabwe/psiLogo.png"]]></imageExpression>
+			</image>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="378">
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="0" y="0" width="555" height="378"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{hiv_status}.equals("") ? "NOT PROVIDED" : $F{hiv_status}]]></keyExpression>
+					<valueExpression><![CDATA[$F{count(*)}]]></valueExpression>
+					<sectionHyperlink/>
+				</pieDataset>
+				<piePlot labelFormat="{2}">
+					<plot/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>

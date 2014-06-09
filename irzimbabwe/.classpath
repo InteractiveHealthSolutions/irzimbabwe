@@ -31,6 +31,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/joda-time-1.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jta.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/junit.jar"/>
+	<classpathentry kind="lib" path="D:/workWithGwt/irzimbabwe/war/WEB-INF/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.13.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/quartz-1.8.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.5.6.jar"/>
@@ -41,10 +42,68 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xalan.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtext.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-annotations-3.4.0.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-commons-annotations-3.3.0.ga.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smstarseel-hib3.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/ant-1.7.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/antlr-2.7.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/barbecue-1.5-beta1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/barcode4j-2.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-anim.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-bridge.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-css.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-dom.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-ext.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-gvt.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-parser.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-script.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-svg-dom.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-util.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/batik-xml.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/bcel-5.2.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/castor-1.2.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/commons-collections-2.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/commons-javaflow-20060411.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/groovy-all-2.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/hsqldb-1.8.0-10.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/iText-2.1.7.js2.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jackson-annotations-2.0.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jackson-core-2.0.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jackson-databind-2.0.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jcommon-1.0.15.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jdt-compiler-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jfreechart-1.0.12.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jpa.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/jxl-2.6.10.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/mondrian-3.1.1.12687.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/png-encoder-1.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/poi-3.7-20101029.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/poi-ooxml-3.7-20101029.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/poi-ooxml-schemas-3.7-20101029.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/rhino-1.7R3.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/saaj-api-1.3.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/serializer.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/servlet-api-2.4.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/spring-beans-2.5.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/spring-core-2.5.5.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/velocity-1.7-dep.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/xalan-2.7.1.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/xbean.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/xercesImpl-2.10.0.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="D:/tools/jasperreports-5.1.0/lib/xml-apis-ext.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

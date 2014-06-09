@@ -15,8 +15,8 @@
   <property generated="never" lazy="false" name="visitPurpose" type="string">
    <column length="10" name="visit_purpose" not-null="true"/>
   </property>
-  <property generated="never" lazy="false" name="otherPurpose" type="string">
-   <column length="10" name="other_purpose"/>
+  <property generated="never" lazy="false" name="diseaseConfirmed" type="java.lang.Boolean">
+   <column name="disease_confirmed"/>
   </property>
   <property generated="never" lazy="false" name="visitDate" type="timestamp">
    <column length="10" name="visit_date"/>

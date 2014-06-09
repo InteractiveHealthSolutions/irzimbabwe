@@ -70,7 +70,7 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 
 	private Label						lblClientsInitialDemographics				= new Label ("MC Referral Form");
 	private Label						lblClientsId								= new Label ("Client's ID:");
-	private Label						lblReasonForReferring						= new Label ("Reason for Referring:");
+	private Label						lblReasonForReferring						= new Label ("Client's reason for MC:");
 	private Label						lblReferralSiteName							= new Label ("Referring Site Name:");
 	private Label						lblHowDidClient								= new Label ("How did Client hear about MC?");
 	private Label						lblDidCommunityMobilizer					= new Label ("Did Community Mobilizer Team speak to the Client('s family member)?");
@@ -265,7 +265,7 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 
 	public void saveData ()
 	{
-		if (validate ())
+		if(validate())
 		{
 			Date enteredDate = new Date ();
 			int eId = 0;
@@ -283,26 +283,34 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 			for (int i = 0; i < reasonListBox.getItemCount (); i++)
 				if (reasonListBox.isItemSelected (i))
 					reasons.append (reasonListBox.getValue (i) + ";");
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "REASON"), reasons.toString ()));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "REASON"),reasons.toString ()));
 			if (otherReasonTextBox.isEnabled ())
-				encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "OTHER_REASON"), IRZClient.get (otherReasonTextBox).toUpperCase ()));
+				encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,"OTHER_REASON"), IRZClient.get (otherReasonTextBox).toUpperCase ()));
 			StringBuilder sources = new StringBuilder ();
-			CheckBox[] checks = {sourceFriendOrFamilyCheckBox, sourceSpouseCheckBox, sourceOtherMcClientCheckBox, sourceCommunityMobilizerCheckBox, sourceHealthWorkerCheckBox,
-					sourceNewStartTreatmentCheckBox, sourceOtherTreatmentProviderCheckBox, sourceVolunteerCheckBox, sourcePosterCheckBox, sourceTvCheckBox, sourceRadioCheckBox, sourceInternetCheckBox};
+			CheckBox[] checks = {sourceFriendOrFamilyCheckBox, sourceSpouseCheckBox, sourceOtherMcClientCheckBox,
+					sourceCommunityMobilizerCheckBox, sourceHealthWorkerCheckBox, sourceNewStartTreatmentCheckBox,
+					sourceOtherTreatmentProviderCheckBox, sourceVolunteerCheckBox, sourcePosterCheckBox, sourceTvCheckBox,
+					sourceRadioCheckBox, sourceInternetCheckBox};
 			for (CheckBox checkBox : checks)
 			{
 				if (checkBox.getValue ())
 					sources.append (checkBox.getName ());
 				sources.append (";");
 			}
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "SOURCE"), sources.toString ()));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "SOURCE"),
+					sources.toString ()));
 			if (otherSourceTextBox.isEnabled ())
-				encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "OTHER_SOURCE"), IRZClient.get (otherSourceTextBox).toUpperCase ()));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "SPOKE_TO_TEAM"), IRZClient.get (communityMobilizerSpokeComboBox)));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "AREA_WHEN_SPOKE"), IRZClient.get (locationWhenCommunityMobilizerSpokeComboBox)));
+				encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+						"OTHER_SOURCE"), IRZClient.get (otherSourceTextBox).toUpperCase ()));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+					"SPOKE_TO_TEAM"), IRZClient.get (communityMobilizerSpokeComboBox)));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+					"AREA_WHEN_SPOKE"), IRZClient.get (locationWhenCommunityMobilizerSpokeComboBox)));
 			String referredTo = IRZClient.get (siteNameComboBox);
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "REFERRED_TO"), referredTo));
-			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName, "HAD_REFERRAL"), (hasReferralFormCheckBox.getValue () ? "Y" : "N")));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+					"REFERRED_TO"), referredTo));
+			encounterResults.add (new EncounterResults (new EncounterResultsId (eId, clientId, pid2, formName,
+					"HAD_REFERRAL"), (hasReferralFormCheckBox.getValue () ? "Y" : "N")));
 
 			Referral referral = new Referral (clientId);
 			referral.setReason (reasons.toString ());
@@ -310,29 +318,31 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 			referral.setReferredBy (IRZ.getCurrentUserName ());
 			referral.setDateReferred (new Date ());
 
-			service.saveMCReferral (referral, encounter, encounterResults.toArray (new EncounterResults[] {}), new AsyncCallback<String> ()
-			{
-				public void onSuccess (String result)
-				{
-					if (result.equals ("SUCCESS"))
+			service.saveMCReferral (referral, encounter, encounterResults.toArray (new EncounterResults[] {}),
+					new AsyncCallback<String> ()
 					{
-						Window.alert (CustomMessage.getInfoMessage (InfoType.INSERTED));
-						clearUp ();
-						load (false);
-					}
-					else
-					{
-						Window.alert (CustomMessage.getErrorMessage (ErrorType.INSERT_ERROR) + "\nDetails: " + result);
-						load (false);
-					}
-				}
+						public void onSuccess (String result)
+						{
+							if (result.equals ("SUCCESS"))
+							{
+								Window.alert (CustomMessage.getInfoMessage (InfoType.INSERTED));
+								clearUp ();
+								load (false);
+							}
+							else
+							{
+								Window.alert (CustomMessage.getErrorMessage (ErrorType.INSERT_ERROR) + "\nDetails: " + result);
+								load (false);
+							}
+						}
 
-				public void onFailure (Throwable caught)
-				{
-					caught.printStackTrace ();
-				}
-			});
-		}
+						public void onFailure (Throwable caught)
+						{
+							caught.printStackTrace ();
+							load(false);
+						}
+					});	
+		}		
 	}
 
 	/**
@@ -346,47 +356,52 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 		try
 		{
 			load (true);
-			service.getUserRgihts (IRZ.getCurrentUserName (), IRZ.getCurrentRole (), menuName, new AsyncCallback<Boolean[]> ()
-			{
-				public void onSuccess (Boolean[] result)
-				{
-					final Boolean[] userRights = result;
-					try
+			service.getUserRgihts (IRZ.getCurrentUserName (), IRZ.getCurrentRole (), menuName,
+					new AsyncCallback<Boolean[]> ()
 					{
-						service.findUser (IRZ.getCurrentUserName (), new AsyncCallback<User> ()
+						public void onSuccess (Boolean[] result)
 						{
-							public void onSuccess (User result)
+							final Boolean[] userRights = result;
+							try
 							{
-								rights.setRoleRights (IRZ.getCurrentRole (), userRights);
-								boolean hasAccess = rights.getAccess (AccessType.INSERT) | rights.getAccess (AccessType.UPDATE) | rights.getAccess (AccessType.DELETE)
-										| rights.getAccess (AccessType.SELECT);
-								if (!hasAccess)
+								service.findUser (IRZ.getCurrentUserName (), new AsyncCallback<User> ()
 								{
-									Window.alert (CustomMessage.getErrorMessage (ErrorType.DATA_ACCESS_ERROR));
-									MainMenuComposite.clear ();
-								}
-								saveButton.setEnabled (rights.getAccess (AccessType.INSERT));
-								load (false);
-							}
+									public void onSuccess (User result)
+									{
+										rights.setRoleRights (IRZ.getCurrentRole (), userRights);
+										boolean hasAccess = rights.getAccess (AccessType.INSERT)
+												| rights.getAccess (AccessType.UPDATE)
+												| rights.getAccess (AccessType.DELETE)
+												| rights.getAccess (AccessType.SELECT);
+										if (!hasAccess)
+										{
+											Window.alert (CustomMessage.getErrorMessage (ErrorType.DATA_ACCESS_ERROR));
+											MainMenuComposite.clear ();
+										}
+										saveButton.setEnabled (rights.getAccess (AccessType.INSERT));
+										load (false);
+									}
 
-							public void onFailure (Throwable caught)
+									public void onFailure (Throwable caught)
+									{
+										caught.printStackTrace();
+										load (false);
+									}
+								});
+							}
+							catch (Exception e)
 							{
+								e.printStackTrace ();
 								load (false);
 							}
-						});
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace ();
-						load (false);
-					}
-				}
+						}
 
-				public void onFailure (Throwable caught)
-				{
-					load (false);
-				}
-			});
+						public void onFailure (Throwable caught)
+						{
+							caught.printStackTrace ();
+							load (false);
+						}
+					});
 		}
 		catch (Exception e)
 		{
@@ -410,7 +425,7 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 					public void onSuccess (Patient result)
 					{
 						currentPatient = result;
-						if (currentPatient != null && currentPatient.getDiseaseSuspected ().equals ("TB"))
+						if (currentPatient != null || currentPatient.getDiseaseSuspected () != null || !currentPatient.getDiseaseSuspected ().equals ("TB"))
 						{
 							Window.alert (CustomMessage.getInfoMessage (InfoType.ID_VALID));
 						}
@@ -445,7 +460,10 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 					public void onSuccess (Referral result)
 					{
 						if (result != null)
-							Window.alert (CustomMessage.getErrorMessage (ErrorType.DUPLICATION_ERROR));
+						{
+						    Window.alert (CustomMessage.getErrorMessage (ErrorType.DUPLICATION_ERROR));
+						    load(false);
+						}
 						else
 							saveData ();
 					}
@@ -453,12 +471,14 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 					public void onFailure (Throwable caught)
 					{
 						caught.printStackTrace ();
+						load(false);
 					}
 				});
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace ();
+				load(false);
 			}
 		}
 		else if (sender == closeButton)
@@ -466,7 +486,7 @@ public class MCReferralComposite extends Composite implements ClickHandler, Chan
 			MainMenuComposite.clear ();
 		}
 	}
-
+	
 	@Override
 	public void onChange (ChangeEvent event)
 	{

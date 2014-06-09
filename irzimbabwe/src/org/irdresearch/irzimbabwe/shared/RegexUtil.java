@@ -99,7 +99,7 @@ public class RegexUtil
 	private static final String	datePattern				= "(0[1-9]|[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012]|[1-9])[-/](19|20)\\d{2}";
 	private static final String	timePattern_am_pm		= "(1[012]|[1-9]):[0-5][0-9](\\s)?(?i)(am|pm)";
 	private static final String	timePattern_24			= "([01]?[0-9]|2[0-3]):[0-5][0-9]";
-	private static final String	nicPattern				= "^[]";
+	private static final String	nicPattern				= "^((\\d{2})-(\\d{6,7})-([a-zA-Z]{1})-(\\d{2}))";
 	private static final String	urlPattern				= "^(((ht|f)tp(s?))\\://)?(www.|[a-zA-Z].)[a-zA-Z0-9\\-\\.]+\\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk|pk|co|)(\\:[0-9]+)*(/($|[a-zA-Z0-9\\.\\,\\;\\?\\'\\\\\\+&amp;%\\$#\\=~_\\-]+))*$";
 	private static final String	smsPattern				= "[A-Z0-9]{2,2}[0-9]{9,9} [0-3][0-9](JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)20[1-3][0-9] [YN]";
 	/**

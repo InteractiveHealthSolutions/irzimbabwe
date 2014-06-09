@@ -3,6 +3,7 @@ package org.irdresearch.irzimbabwe.client;
 
 import org.irdresearch.irzimbabwe.shared.Parameter;
 import org.irdresearch.irzimbabwe.shared.model.*;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -56,6 +57,7 @@ public interface ServerServiceAsync
 	void deleteUserRights (UserRights userRights, AsyncCallback<Boolean> callback) throws Exception;
 
 	void deleteVisit (Visit visit, AsyncCallback<Boolean> callback) throws Exception;
+	void deleteVisits(Visit[] visit, AsyncCallback<Boolean> callback) throws Exception;
 
 	/* Find methods */
 	void findDefinition (String definitionType, String definitionKey, AsyncCallback<Definition> callback) throws Exception;
@@ -91,6 +93,8 @@ public interface ServerServiceAsync
 	void findPersonsByName (String firstName, String lastName, AsyncCallback<Person[]> callback) throws Exception;
 
 	void findPersonsByNIC (String NIC, AsyncCallback<Person> callback) throws Exception;
+	
+	void findDiseaseConfirmed(String patientId, AsyncCallback<String> callback) throws Exception;
 
 	void findReferral (String patientId, AsyncCallback<Referral> callback) throws Exception;
 
@@ -102,7 +106,7 @@ public interface ServerServiceAsync
 
 	void findSmsTextByRule (String ruleId, AsyncCallback<SmsText[]> callback);
 
-	void findSmsTextByLanguage (String ruleId, int languageId, AsyncCallback<SmsText> callback) throws Exception;
+	void findSmsTextByLanguage (String ruleId, String preferredLanguageId, AsyncCallback<SmsText> callback) throws Exception;
 
 	void findSputumTest (String patientId, Integer sampleNo, AsyncCallback<SputumTest> callback) throws Exception;
 
@@ -114,7 +118,11 @@ public interface ServerServiceAsync
 
 	void findUserRights (String roleName, String menuName, AsyncCallback<UserRights> callback) throws Exception;
 
-	void findVisit (String patientId, AsyncCallback<Visit> callback) throws Exception;
+	void findParticularVisit (String patientId, String visitPurpose ,AsyncCallback<Visit> callback) throws Exception;
+	
+	void findVisit(String patientId, AsyncCallback<Visit> callback);
+	
+	void findAllVisits(String patient_id,AsyncCallback<Visit[]> callback) throws Exception;
 
 	/* Save methods */
 	void saveDefinition (Definition definition, AsyncCallback<Boolean> callback) throws Exception;
@@ -260,7 +268,7 @@ public interface ServerServiceAsync
 	void setCurrentUser (String userName, String role, AsyncCallback<Void> callback) throws Exception;
 
 	/* Form submission methods */
-	void saveVisitPurpose (Visit visit, Patient patient, Encounter encounter, EncounterResults[] array, AsyncCallback<String> asyncCallback);
+	void saveVisitPurpose (Visit[] visits, Patient patient, Encounter encounter, EncounterResults[] array, AsyncCallback<String> asyncCallback);
 
 	void saveClientDemographics (Person person, Encounter encounter, EncounterResults[] encounterResults, AsyncCallback<String> callback);
 
@@ -272,7 +280,7 @@ public interface ServerServiceAsync
 
 	void saveSputumRegistration (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults, AsyncCallback<String> callback);
 
-	void saveSmearResult (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults, AsyncCallback<String> callback);
+	void saveSmearResult (SputumTest sputumTest, Encounter encounter, EncounterResults[] encounterResults,boolean enableClientSms, AsyncCallback<String> callback);
 
 	void checkForGeneXpertTest (String patientId, AsyncCallback<String> callback);
 

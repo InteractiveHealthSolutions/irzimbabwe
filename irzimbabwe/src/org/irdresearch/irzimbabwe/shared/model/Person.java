@@ -66,6 +66,7 @@ public class Person implements java.io.Serializable
 	private String				tertiaryPhone;
 	private String				tertiaryMobile;
 	private String				tertiaryEmail;
+	private String				preferredLanguage;
 
 	public Person ()
 	{
@@ -82,7 +83,7 @@ public class Person implements java.io.Serializable
 			String address3, String address4, String city, String state, String country, String region, float latitude, float longitude, String phone, String mobile, String email, String fax,
 			String alternateAddress1, String alternateAddress2, String alternateAddress3, String alternateAddress4, String alternateCity, String alternateState, String alternateCountry,
 			String alternateRegion, String alternatePhone, String alternateMobile, String alternateEmail, String alternateFax, float alternateLatitude, float alternateLongitude,
-			String tertiaryAddress, String tertiaryPhone, String tertiaryMobile, String tertiaryEmail)
+			String tertiaryAddress, String tertiaryPhone, String tertiaryMobile, String tertiaryEmail,String preferredLanguage)
 	{
 		this.pid = pid;
 		this.title = title;
@@ -135,6 +136,7 @@ public class Person implements java.io.Serializable
 		this.tertiaryMobile = tertiaryMobile;
 		this.tertiaryPhone = tertiaryPhone;
 		this.tertiaryEmail = tertiaryEmail;
+		this.preferredLanguage=preferredLanguage;
 	}
 
 	public String getPid ()
@@ -646,6 +648,15 @@ public class Person implements java.io.Serializable
 	{
 		this.tertiaryEmail = tertiaryEmail;
 	}
+	public String getPreferredLanguage ()
+	{
+		return this.preferredLanguage;
+	}
+
+	public void setPreferredLanguage (String pLang)
+	{
+		this.preferredLanguage = pLang;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -658,6 +669,6 @@ public class Person implements java.io.Serializable
 				+ address3 + ", " + address4 + ", " + city + ", " + state + ", " + country + ", " + region + ", " + latitude + ", " + longitude + ", " + phone + ", " + mobile + ", " + email + ", "
 				+ fax + ", " + alternateAddress1 + ", " + alternateAddress2 + ", " + alternateAddress3 + ", " + alternateAddress4 + ", " + alternateCity + ", " + alternateState + ", "
 				+ alternateCountry + ", " + alternateRegion + ", " + alternatePhone + ", " + alternateMobile + ", " + alternateEmail + ", " + alternateFax + ", " + alternateLatitude + ", "
-				+ alternateLongitude + ", " + tertiaryAddress + ", " + tertiaryPhone + ", " + tertiaryMobile + ", " + tertiaryEmail;
+				+ alternateLongitude + ", " + tertiaryAddress + ", " + tertiaryPhone + ", " + tertiaryMobile + ", " + tertiaryEmail+ ","+preferredLanguage;
 	}
 }

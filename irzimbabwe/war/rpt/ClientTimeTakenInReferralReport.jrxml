@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report4" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.background.image.properties" value="true,true,0.25,-8,-8,0,0,210,138"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Heading 1" lineSpacing="Single" fontSize="16" isBold="true"/>
+	<queryString>
+		<![CDATA[select p.patient_id as ClientId,
+(CASE WHEN st.smear_result <> 'NEGATIVE' OR st.gxp_result='MTB+'
+THEN MIN(st.date_smear_tested) ELSE
+(CASE WHEN st.smear_result='NEGATIVE' OR st.gxp_result='MTB-'
+THEN MAX(st.date_smear_tested) end )END) as LastSmearTested,
+IF(r.date_referred IS NULL,'N/A',r.date_referred) as DateOfReferral,
+(CASE WHEN st.smear_result <> 'NEGATIVE' OR st.gxp_result='MTB+'
+THEN (DATEDIFF(r.date_referred,MIN(st.date_smear_tested)))ELSE
+(CASE WHEN st.smear_result='NEGATIVE' OR st.gxp_result='MTB-'
+THEN (DATEDIFF(r.date_referred,MAX(st.date_smear_tested))) end )END) as TimeTakenInReferral,
+r.reason as Reason from patient as p
+right outer join sputum_test as st on p.patient_id=st.patient_id
+right outer join referral as r on r.patient_id=st.patient_id
+where p.suspected_by is not null and (p.patient_status='SUSPECT' or p.patient_status='CONFIRMED')
+group by p.patient_id;]]>
+	</queryString>
+	<field name="ClientId" class="java.lang.String"/>
+	<field name="LastSmearTested" class="java.sql.Timestamp"/>
+	<field name="DateOfReferral" class="java.sql.Timestamp"/>
+	<field name="TimeTakenInReferral" class="java.lang.Long"/>
+	<field name="Reason" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="referralReason">
+		<groupExpression><![CDATA[$F{Reason}]]></groupExpression>
+	</group>
+	<title>
+		<band height="87">
+			<staticText>
+				<reportElement x="118" y="0" width="437" height="79"/>
+				<textElement lineSpacing="Single">
+					<font size="26"/>
+				</textElement>
+				<text><![CDATA[Time taken in referral of clients]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="142" height="80"/>
+				<imageExpression class="java.lang.String"><![CDATA["/var/lib/tomcat6/webapps/irzimbabwe/psiLogo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="50">
+			<staticText>
+				<reportElement x="0" y="30" width="78" height="20"/>
+				<textElement lineSpacing="Single">
+					<font size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Client ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="30" width="100" height="20"/>
+				<textElement lineSpacing="Single">
+					<font size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Last smear tested]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="30" width="100" height="20"/>
+				<textElement lineSpacing="Single">
+					<font size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Date of referral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="337" y="30" width="131" height="20"/>
+				<textElement lineSpacing="Single">
+					<font size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Time taken in referral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="479" y="30" width="100" height="20"/>
+				<textElement lineSpacing="Single">
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[REASON]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30">
+			<textField>
+				<reportElement x="0" y="10" width="78" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ClientId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="93" y="10" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LastSmearTested} == null ? "No data" : String.valueOf($F{LastSmearTested}.toGMTString())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="10" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DateOfReferral}.toGMTString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="337" y="10" width="131" height="20"/>
+				<textElement lineSpacing="Single">
+					<font isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{TimeTakenInReferral}.intValue() < 0 ? "Negative value":
+($F{TimeTakenInReferral}.equals( null ) ? "No data" : $F{TimeTakenInReferral}
+))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="10" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Reason} == null ? "No data" : String.valueOf($F{Reason})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="76">
+			<textField>
+				<reportElement x="455" y="0" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="421" y="0" width="34" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<text><![CDATA[Page:]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="50">
+			<staticText>
+				<reportElement x="379" y="30" width="76" height="20"/>
+				<textElement lineSpacing="Single">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Date Printed:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="455" y="29" width="100" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="29" width="78" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<text><![CDATA[Total Records:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="78" y="29" width="40" height="20"/>
+				<textElement lineSpacing="Single"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

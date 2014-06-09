@@ -44,3 +44,27 @@ h1 {
 }
 .gwt-DecoratedStackPanel {
 }
+.clientDemogClientProfileTextArea {
+font-color: brown;
+	margin-top: auto;
+	margin-right: 1px;
+	margin-bottom: 1px;
+	border: thin dashed;
+	font-size: 30px;
+	font-style: normal;
+	font-family: @Arial Unicode MS;
+	font-weight: normal;
+	text-align: center;
+	background-color: lightsteelblue;
+}
+.clientProfileGrids {
+
+	font-color:white;
+	color: Black;
+	border: 1px solid black;
+	font-size: 1.2em;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: underline;
+	background-color: silver;
+}

@@ -38,7 +38,7 @@ public class ResponseReaderJob extends TimerTask{
 	@Override
 	public void run() 
 	{
-		System.out.println("ResponseReaderJob Running");
+	//	System.out.println("ResponseReaderJob Running");
 
 		TarseelServices tsc = TarseelContext.getServices();
 
@@ -84,8 +84,8 @@ public class ResponseReaderJob extends TimerTask{
 							stopCommandReceived(responderTable, responderColumn, responderId.toString(), ib.getOriginator());
 						}
 						
-						if(responderTable.equalsIgnoreCase(SmsRuleParam.ReferenceTableClientSms)) {
-							visitedCommandReceived(responderTable, responderColumn, responderId.toString(),ib.getText(), ib.getOriginator());
+						if(responderTable.equalsIgnoreCase(SmsRuleParam.ReferenceTableTreatmentSiteSms)) {
+							visitedCommandReceived(responderTable, responderColumn, responderId.toString(), ib.getOriginator(), ib.getText());
 						}
 					
 						Response resp = new Response();
@@ -111,7 +111,7 @@ public class ResponseReaderJob extends TimerTask{
 			}
 			
 			tsc.commitTransaction();
-			System.out.println("ResponseReaderJob Ran Successfully");
+	//		System.out.println("ResponseReaderJob Ran Successfully");
 		}
 		catch (Exception e) {
 			e.printStackTrace();

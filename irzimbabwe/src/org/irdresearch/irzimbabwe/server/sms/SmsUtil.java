@@ -13,6 +13,7 @@ import org.irdresearch.irzimbabwe.server.ServerServiceImpl;
 import org.irdresearch.irzimbabwe.server.util.HibernateUtil;
 import org.irdresearch.irzimbabwe.shared.SmsRuleParam;
 import org.irdresearch.irzimbabwe.shared.SmsStatus;
+import org.irdresearch.irzimbabwe.shared.model.Person;
 import org.irdresearch.irzimbabwe.shared.model.SmsLog;
 import org.irdresearch.irzimbabwe.shared.model.SmsRule;
 
@@ -27,12 +28,22 @@ public class SmsUtil {
 		return num+1;
 	}
 	
-	public static String findText (String smsRuleId){
+	//find sms on the basis of rule id and language id.Preferred Language of a patient exists in Person class Default is English 
+	public static String findText (String smsRuleId,String langId){
 		String text = "Please don`t forget to visit your clinic!";
-
+		if( 0 == langId.compareTo("SHN"))
+		{
+		
+			text = "Rukumbiro usa kanganwa ku shanyira kiriniki yako!";
+		}
+		else if( 0 ==langId.compareTo("NDB"))
+		{
+			text = "NDEBELE :Please don`t forget to visit your clinic!";
+		}	
+			
 		List<Object> rt=new ArrayList<Object>();
 
-		rt.addAll(Arrays.asList(HibernateUtil.util.findObjects("SELECT text FROM SmsText WHERE ruleId='" + smsRuleId+"'")));
+		rt.addAll(Arrays.asList(HibernateUtil.util.findObjects("SELECT text FROM SmsText WHERE ruleId='" + smsRuleId+"' and language_id='"+langId+"'")));
 
 		if (rt.size() > 0) {
 			int num = 1;
@@ -47,27 +58,30 @@ public class SmsUtil {
 	
 	public static void createSputumResultsTreatmentSiteSms(String clientId, String siteId, Date triggerDate, int treatmentMonth) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Site_TB_Sputum_Results);
-		
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage ();
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, treatmentMonth );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, treatmentMonth );
 			createSms(rule, siteId, SmsRuleParam.ReferenceTableTreatmentSiteSms, SmsRuleParam.ReferenceColumnTreatmentSiteSms, triggerDate, text);
 		}
 	}
 	
 	public static void createSputumResultsClientSms(String clientId, Date triggerDate) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_TB_Sputum_Results);
-		
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, null );
 			createSms(rule, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	public static void createReferralTreatmentSiteSms(String clientId, String siteId, Date triggerDate, Integer month) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Site_Referral);
-		
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, month );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, month );
 			createSms(rule, siteId, SmsRuleParam.ReferenceTableTreatmentSiteSms, SmsRuleParam.ReferenceColumnTreatmentSiteSms, triggerDate, text);
 		}
 	}
@@ -82,74 +96,86 @@ public class SmsUtil {
 		SmsRule rule6 = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_Referral_M3);
 		SmsRule rule7 = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_Referral_M4_plus);
 		
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
+		
 		if(rule1.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule1.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule1.getRuleId(),langId), clientId, null );
 			createSms(rule1, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule2.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule2.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule2.getRuleId(),langId), clientId, null );
 			createSms(rule2, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule3.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule3.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule3.getRuleId(),langId), clientId, null );
 			createSms(rule3, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule4.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule4.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule4.getRuleId(),langId), clientId, null );
 			createSms(rule4, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule5.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule5.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule5.getRuleId(),langId), clientId, null );
 			createSms(rule5, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule6.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule6.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule6.getRuleId(),langId), clientId, null );
 			createSms(rule6, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 		if(rule7.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule7.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule7.getRuleId(),langId), clientId, null );
 			createSms(rule7, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	public static void createMCDay2ClientSms(String clientId, Date triggerDate) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_MC_Day2);
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, null );
 			createSms(rule, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	public static void createMCDay7ClientSms(String clientId, Date triggerDate) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_MC_Day7);
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, null );
 			createSms(rule, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	public static void createMCDay42ClientSms(String clientId, Date triggerDate) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_MC_Day42);
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, null );
 			createSms(rule, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	public static void createMCCustomClientSms(String clientId, Date triggerDate) throws ParseException{
 		SmsRule rule = ssl.findSmsRule(SmsRuleParam.SmsRule_Client_MC_Custom);
+		Person pers=ssl.findPerson(clientId);
+		String langId=pers.getPreferredLanguage();
 		
 		if(rule.getIsEnabled()){
-			String text = insertClientInfoInSmsText( findText(rule.getRuleId()), clientId, null );
+			String text = insertClientInfoInSmsText( findText(rule.getRuleId(),langId), clientId, null );
 			createSms(rule, clientId, SmsRuleParam.ReferenceTableClientSms, SmsRuleParam.ReferenceColumnClientSms, triggerDate, text);
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
-	private static void createSms(SmsRule rule, String recipientId, String recipientReferenceTable, String recipientReferenceColumn, Date triggerDate, String text) throws ParseException{
+	private static void createSms(SmsRule rule, String recipientId, String recipientReferenceTable, String recipientReferenceColumn, Date triggerDate,String text) throws ParseException{
+		
 		Object phone = HibernateUtil.util.selectObject("SELECT mobile FROM "+recipientReferenceTable+" WHERE "+recipientReferenceColumn+"='"+recipientId+"'");
 		if(phone != null && !StringUtils.isEmptyOrWhitespaceOnly(phone.toString())){
 			String time = "09:00:00";

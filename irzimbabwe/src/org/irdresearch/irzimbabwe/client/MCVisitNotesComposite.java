@@ -272,7 +272,8 @@ public class MCVisitNotesComposite extends Composite implements ClickHandler, Ch
 			int eId = 0;
 			String clientId = IRZClient.get (clientIdTextBox).toUpperCase ();
 			String pid2 = IRZ.getCurrentUserName ();
-
+			enteredDate=dateVisitedDateBox.getValue();
+			
 			EncounterId encounterId = new EncounterId (eId, clientId, pid2, formName);
 			Encounter encounter = new Encounter (encounterId, IRZ.getCurrentLocation ());
 			encounter.setLocationId (IRZ.getCurrentLocation ());

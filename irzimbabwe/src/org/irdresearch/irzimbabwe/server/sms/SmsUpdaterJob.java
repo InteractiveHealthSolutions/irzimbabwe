@@ -21,7 +21,7 @@ public class SmsUpdaterJob extends TimerTask{
 	public void run()
 	{
 		try{
-			System.out.println("SmsUpdaterJob Running");
+			//System.out.println("SmsUpdaterJob Running");
 			List<Object> smsl = Arrays.asList(HibernateUtil.util.findObjects("FROM SmsLog WHERE status = '"+SmsStatus.WAITING+"' AND referenceNumber IS NOT NULL"));
 			
 			for (Object object : smsl) {
@@ -58,7 +58,7 @@ public class SmsUpdaterJob extends TimerTask{
 					tsc.closeSession();
 				}
 			}//end for
-			System.out.println("SmsUpdaterJob Ran Successfully");
+			//System.out.println("SmsUpdaterJob Ran Successfully");
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -311,6 +311,11 @@ public class HibernateUtil implements Serializable
 			case LOGIN :
 				logObj = new LogLogin (IRZ.getCurrentUserName (), new Date (), null, "");
 				break;
+			case LOGOUT:
+				logObj = new LogLogin (IRZ.getCurrentUserName (), null, new Date (), "");
+				break;
+			default :
+				break;
 		}
 		try
 		{
