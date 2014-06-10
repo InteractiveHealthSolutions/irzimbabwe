@@ -158,5 +158,9 @@
         <property name="tertiaryEmail" type="string">
             <column name="tertiary_email" length="255" />
         </property>
+        
+        <property name="preferredLanguage" type="string">
+            <column name="language" length="10" />
+        </property>
     </class>
 </hibernate-mapping>

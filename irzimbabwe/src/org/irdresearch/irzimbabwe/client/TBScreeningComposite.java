@@ -750,11 +750,8 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 		    }
 
 		    public void onFailure(Throwable caught)
-
 		    {
-
 			caught.printStackTrace();
-
 		    }
 
 		});
@@ -762,7 +759,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	    {
 		e.printStackTrace();
 	    }
-
 	}
 	else if (sender == saveButton)
 	{

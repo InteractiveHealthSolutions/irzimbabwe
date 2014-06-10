@@ -45,7 +45,7 @@ public class ServerServiceImpl extends RemoteServiceServlet implements ServerSer
 	if (currentDirectory.startsWith("/"))
 	    applicationPath = "/var/lib/tomcat6/webapps/irzimbabwe/";
 	else
-	    applicationPath = "D:\\workWithGWT\\irzimbabwe\\war\\";
+	    applicationPath = "C:\\workspace\\irzimbabwe\\war\\";
 	propertiesFilePath = applicationPath + "irzimbabwe.properties";
 	setProperties();
     }

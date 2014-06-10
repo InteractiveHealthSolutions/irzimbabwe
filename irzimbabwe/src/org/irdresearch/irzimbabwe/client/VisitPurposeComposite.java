@@ -269,8 +269,7 @@ public class VisitPurposeComposite extends Composite implements ClickHandler, Va
     @SuppressWarnings("deprecation")
     public void saveData()
     {
-	if (validate())
-	{
+	
 	    Date enteredDate = dateVisitDateBox.getValue();
 	    int eId = 0;
 	    final String clientId = clientIdLabel.getText();
@@ -312,7 +311,6 @@ public class VisitPurposeComposite extends Composite implements ClickHandler, Va
 	    patient.setDateScreened(new Date());
 	    if (!purpose.equals("TB") && purposesCount > 1)
 	    {// client has multiple visit purpose
-
 		encounterResults.add(new EncounterResults(new EncounterResultsId(eId, pid1, pid2, formName, "PURPOSE"), multiPurpose));
 	    }
 	    else if (!purpose.equals("TB") && purposesCount == 1)
@@ -351,7 +349,7 @@ public class VisitPurposeComposite extends Composite implements ClickHandler, Va
 		    load(false);
 		}
 	    });
-	}
+	//}
     }
 
     /**
@@ -423,16 +421,20 @@ public class VisitPurposeComposite extends Composite implements ClickHandler, Va
 		    public void onSuccess(String result)
 		    {
 			// Generate client ID
-			StringBuilder clientId = new StringBuilder();
-			clientId.append(IRZ.getCurrentLocation());
-			clientId.append(String.valueOf(new Date().getYear()).substring(1));
-			clientId.append(IRZClient.get(siteComboBox));
-			String resString = String.valueOf(result);
-			for (int i = 0; i < (5 - resString.length()); i++)
-			    clientId.append("0");
-			clientId.append(resString);
-			clientIdLabel.setText(clientId.toString());
-			saveData();
+			if (validate())
+			{
+        			StringBuilder clientId = new StringBuilder();
+        			clientId.append(IRZ.getCurrentLocation());
+        			clientId.append(String.valueOf(new Date().getYear()).substring(1));
+        			clientId.append(IRZClient.get(siteComboBox));
+        			String resString = String.valueOf(result);
+        			for (int i = 0; i < (5 - resString.length()); i++)
+        			    clientId.append("0");
+        			clientId.append(resString);
+        			clientIdLabel.setText(clientId.toString());
+        			saveData();
+			}
+    			
 			load(false);
 		    }
 

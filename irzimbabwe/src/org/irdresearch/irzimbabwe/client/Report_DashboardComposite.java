@@ -81,18 +81,18 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 	private TextBox						pendingResultsTextBox		= new TextBox ();
 	private TextBox						positiveResultsTextBox		= new TextBox ();
 	private TextBox						negativeResultsTextBox		= new TextBox ();
-	private TextBox						otherResultsTextBox			= new TextBox ();
+	private TextBox						otherResultsTextBox		= new TextBox ();
 
-	private TextArea					patientsTextArea			= new TextArea ();
+	private TextArea					patientsTextArea		= new TextArea ();
 
 	private CheckBox					specifyFormTypeCheckBox		= new CheckBox ("Specify Form Type:");
 	private CheckBox					patientOptionsCheckBox		= new CheckBox ("More Options");
-	private CheckBox					testTypeCheckBox			= new CheckBox ("Test Type");
+	private CheckBox					testTypeCheckBox		= new CheckBox ("Test Type");
 
 	private ListBox						encounterTypeComboBox		= new ListBox ();
 	private ListBox						patientOptionsComboBox		= new ListBox ();
 	private ListBox						patientOptionsListComboBox	= new ListBox ();
-	private ListBox						textTypeComboBox			= new ListBox ();
+	private ListBox						textTypeComboBox		= new ListBox ();
 
 	public Report_DashboardComposite ()
 	{
@@ -219,21 +219,25 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 		totalTestsTextBox.setMaxLength (4);
 		totalTestsTextBox.setVisibleLength (4);
 		totalTestsTextBox.setReadOnly (true);
+		totalTestsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL)) AND sample_code IS NOT NULL");
 		testsGrid.setWidget (1, 1, totalTestsTextBox);
 		testsGrid.setWidget (2, 0, lblPendingResults);
 		pendingResultsTextBox.setMaxLength (4);
 		pendingResultsTextBox.setVisibleLength (4);
 		pendingResultsTextBox.setReadOnly (true);
+		pendingResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where (smear_result IS NULL AND smear_remarks IS NULL) AND sample_code IS NOT NULL");
 		testsGrid.setWidget (2, 1, pendingResultsTextBox);
 		testsGrid.setWidget (3, 0, lblIndicatingTb);
 		positiveResultsTextBox.setMaxLength (4);
 		positiveResultsTextBox.setVisibleLength (4);
 		positiveResultsTextBox.setReadOnly (true);
+		positiveResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL AND smear_result != 'NEGATIVE')) AND sample_code IS NOT NULL");
 		testsGrid.setWidget (3, 1, positiveResultsTextBox);
 		testsGrid.setWidget (4, 0, lblNonindicating);
 		negativeResultsTextBox.setMaxLength (4);
 		negativeResultsTextBox.setVisibleLength (4);
 		negativeResultsTextBox.setReadOnly (true);
+		negativeResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL AND smear_result = 'NEGATIVE')) AND sample_code IS NOT NULL");
 		testsGrid.setWidget (4, 1, negativeResultsTextBox);
 		testsGrid.setWidget (5, 0, lblOtherResults);
 		otherResultsTextBox.setMaxLength (4);
@@ -250,9 +254,12 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 		specifyFormTypeCheckBox.addClickHandler (this);
 		patientOptionsCheckBox.addClickHandler (this);
 		patientOptionsComboBox.addChangeHandler (this);
+		textTypeComboBox.addChangeHandler(this);
+		testTypeCheckBox.addClickHandler(this);
 		refreshButton.addClickHandler (this);
 		closeButton.addClickHandler (this);
-
+		
+		
 		IRZClient.refresh (flexTable);
 		try
 		{
@@ -386,13 +393,32 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 					caught.printStackTrace ();
 				}
 			});
+			
 			/* Fill summaries for Lab Results grid */
 			filter = "";
 			sqlQueries.clear ();
+			
+			for (Iterator<Widget> iter = testsGrid.iterator (); iter.hasNext ();)
+			{
+				Widget w = iter.next ();
+				if (w instanceof TextBox)
+				{
+					TextBox textBox = (TextBox) w;
+					sqlQueries.add (textBox.getName ());
+				}
+			}
+			
 			service.getQueriesResults (sqlQueries.toArray (new String[] {}), new AsyncCallback<String[]> ()
 			{
 				public void onSuccess (String[] result)
 				{
+				    int cnt = 0;
+					for (Iterator<Widget> iter = testsGrid.iterator (); iter.hasNext ();)
+					{
+						Widget w = iter.next ();
+						if (w instanceof TextBox)
+							((TextBox) w).setText (result[cnt++]);
+					}
 				}
 
 				public void onFailure (Throwable caught)
@@ -501,6 +527,11 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 			patientOptionsListComboBox.setEnabled (patientOptionsCheckBox.getValue ());
 			load (false);
 		}
+		else if(sender == testTypeCheckBox)
+		{
+		    textTypeComboBox.setEnabled(testTypeCheckBox.getValue());
+		    load(false);
+		}
 		else if (sender == refreshButton)
 		{
 			displaySummary ();
@@ -535,6 +566,28 @@ public class Report_DashboardComposite extends Composite implements IForm, Click
 			}
 			else
 				load (false);
+		}
+		else if(sender == textTypeComboBox)
+		{
+		   
+		    if(textTypeComboBox.getItemText(textTypeComboBox.getSelectedIndex()).equals("Smear Microscopy"))
+		    {
+			totalTestsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL)) AND sample_code IS NOT NULL");
+			pendingResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where (smear_result IS NULL AND smear_remarks IS NULL) AND sample_code IS NOT NULL");
+			positiveResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL AND smear_result != 'NEGATIVE')) AND sample_code IS NOT NULL");
+			negativeResultsTextBox.setName("SELECT Count(*) FROM irzimbabwe.sputum_test where ((smear_result IS NULL AND smear_remarks IS NOT NULL) OR (smear_result IS NOT NULL AND smear_result = 'NEGATIVE')) AND sample_code IS NOT NULL");
+			displaySummary();
+			load (false);
+		    }
+		    else
+		    {
+			//sqlQueries.clear ();
+			totalTestsTextBox.setText("");
+			pendingResultsTextBox.setText("");
+			positiveResultsTextBox.setText("");
+			negativeResultsTextBox.setText("");
+			load (false);
+		    }
 		}
 	}
 

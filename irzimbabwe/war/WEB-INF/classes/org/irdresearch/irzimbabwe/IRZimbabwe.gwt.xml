@@ -8,6 +8,7 @@
 	<!-- the theme of your GWT application by uncommenting -->
 	<!-- any one of the following lines. -->
 	<inherits name='com.google.gwt.user.theme.clean.Clean' />
+	<inherits name="com.gwtext.GwtExt"/>
 	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
 	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
@@ -21,5 +22,8 @@
 	<source path='client' />
 	<source path='shared' />
 	<source path='model' />
+	<stylesheet src="js/ext/resources/css/ext-all.css"/>
+	<script src="js/ext/adapter/ext/ext-base.js"/>
+	<script src="js/ext/ext-all.js"/>
 
 </module>
