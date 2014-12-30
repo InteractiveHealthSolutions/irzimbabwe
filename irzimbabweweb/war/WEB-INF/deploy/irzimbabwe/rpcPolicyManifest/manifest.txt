@@ -1,2 +1,3 @@
 # Module irzimbabwe
 # RPC service class, partial path of RPC policy file
+org.irdresearch.irzimbabwe.client.ServerService, 7DB0BD9910C307EC43DD15291C9515E6.gwt.rpc
