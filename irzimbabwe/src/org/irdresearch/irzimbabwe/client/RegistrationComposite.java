@@ -552,123 +552,6 @@ public class RegistrationComposite extends Composite implements ClickHandler, Ch
 	    }
 	    encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "HIV_STATUS"), IRZClient.get(hivStatusComboBox)));
 	    currentPatient.setHivStatus(IRZClient.get(hivStatusComboBox));
-	    if (IRZClient.get(hivStatusComboBox).equals("POSITIVE"))
-	    {
-		try
-		{
-		    service.findParticularVisit(clientId, "HIV", new AsyncCallback<Visit>() {
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-			    // TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onSuccess(Visit result)
-			{
-			    if (result != null)
-			    {
-				result.setDiseaseConfirmed(true);
-				try
-				{
-				    service.updateVisit(result, new AsyncCallback<Boolean>() {
-
-					@Override
-					public void onFailure(Throwable caught)
-					{
-					    // TODO Auto-generated method stub
-					    caught.printStackTrace();
-					    load(false);
-					}
-
-					@Override
-					public void onSuccess(Boolean result)
-					{
-					    if (result)
-					    {
-						System.out.println("Visit Purpose HIV Updated");
-					    }
-					    else
-						System.out.println("Visit Purpose HIV NOT FOUND");
-
-					}
-
-				    });
-				} catch(Exception e)
-				{
-				    // TODO Auto-generated catch block
-				    e.printStackTrace();
-				}
-			    }
-			}
-
-		    });
-		} catch(Exception e)
-		{
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
-	    }
-	    else if (!IRZClient.get(hivStatusComboBox).equals("POSITIVE"))
-	    {
-		try
-		{
-		    service.findParticularVisit(clientId, "HIV", new AsyncCallback<Visit>() {
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-			   caught.printStackTrace();
-
-			}
-
-			@Override
-			public void onSuccess(Visit result)
-			{
-			    if (result != null)
-			    {
-				result.setDiseaseConfirmed(false);
-				try
-				{
-				    service.updateVisit(result, new AsyncCallback<Boolean>() {
-
-					@Override
-					public void onFailure(Throwable caught)
-					{
-					    caught.printStackTrace();
-					    load(false);
-					}
-
-					@Override
-					public void onSuccess(Boolean result)
-					{
-					    if (result)
-					    {
-						System.out.println("Visit Purpose HIV Updated");
-					    }
-					    else
-						System.out.println("Visit Purpose HIV NOT FOUND");
-
-					}
-
-				    });
-				} catch(Exception e)
-				{
-				    System.out.println("Visit Purpose HIV Update CAUGHT IN CLIENT EDIT");
-				    e.printStackTrace();
-				}
-			    }
-			}
-
-		    });
-		} catch(Exception e)
-		{
-		    e.printStackTrace();
-		}
-
-	    }
 	    // Address Details
 	    String addressProvided = IRZClient.get(addressProvidedComboBox);
 	    encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "ADDRESS_PROVIDED"), addressProvided));
@@ -876,7 +759,20 @@ public class RegistrationComposite extends Composite implements ClickHandler, Ch
 					    service.findVisit(clientId, new AsyncCallback<Visit>() {
 						public void onSuccess(Visit result)
 						{
-						    if (result.getVisitPurpose() != null && currentPatient.getDiseaseSuspected() != null)
+						    String diseaseSuspected = currentPatient.getDiseaseSuspected();
+						    if (diseaseSuspected.contains(";"))// multiple
+// visit purposes went through tb screening
+						    {
+							String[] getDisease = diseaseSuspected.split(";");
+							if (getDisease[1].equals("TB"))
+							{
+							    Window.alert(CustomMessage.getInfoMessage(InfoType.ID_VALID));
+							    lblhivPatient.setText("Client visited for " + getDisease[0] + " and is a " + getDisease[1] + " suspect");
+							    lblhivPatient.setVisible(true);
+							}
+
+						    }
+						    else if (result.getVisitPurpose() != null && currentPatient.getDiseaseSuspected() != null)
 						    {
 							Window.alert(CustomMessage.getInfoMessage(InfoType.ID_VALID));
 							if (result.getVisitPurpose().equals("HIV") || result.getVisitPurpose().equals("CD4"))

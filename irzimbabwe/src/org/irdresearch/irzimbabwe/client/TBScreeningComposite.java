@@ -207,7 +207,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	chestPainDurationUnitComboBox.addItem("DAYS", "D");
 	chestPainDurationUnitComboBox.addItem("WEEKS", "W");
 	chestPainDurationUnitComboBox.addItem("MONTHS", "M");
-	chestPainDurationUnitComboBox.addItem("YEARS", "Y");
 	chestPainDurationUnitComboBox.setEnabled(false);
 	chestPainDurationHorizontalPanel.add(chestPainDurationUnitComboBox);
 	lblHasClientExperienced.setWordWrap(false);
@@ -245,7 +244,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	nightSweatsDurationUnitComboBox.addItem("DAYS", "D");
 	nightSweatsDurationUnitComboBox.addItem("WEEKS", "W");
 	nightSweatsDurationUnitComboBox.addItem("MONTHS", "M");
-	nightSweatsDurationUnitComboBox.addItem("YEARS", "Y");
 	nightSweatsDurationUnitComboBox.setEnabled(false);
 	nightSweatsDurationHorizontalPanel.add(nightSweatsDurationUnitComboBox);
 	lblIsClientExperiencing.setWordWrap(false);
@@ -264,7 +262,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	weightLossDurationUnitComboBox.addItem("DAYS", "D");
 	weightLossDurationUnitComboBox.addItem("WEEKS", "W");
 	weightLossDurationUnitComboBox.addItem("MONTHS", "M");
-	weightLossDurationUnitComboBox.addItem("YEARS", "Y");
 	weightLossDurationUnitComboBox.setEnabled(false);
 	weightLossDurationHorizontalPanel.add(weightLossDurationUnitComboBox);
 	lblDoesClientHave.setWordWrap(false);
@@ -283,7 +280,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	feverDurationUnitComboBox.addItem("DAYS", "D");
 	feverDurationUnitComboBox.addItem("WEEKS", "W");
 	feverDurationUnitComboBox.addItem("MONTHS", "M");
-	feverDurationUnitComboBox.addItem("YEARS", "Y");
 	feverDurationUnitComboBox.setEnabled(false);
 	feverDurationHorizontalPanel.add(feverDurationUnitComboBox);
 	symptomsFlexTable.setWidget(10, 0, lblDoesTheClient_3);
@@ -301,7 +297,6 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	lymphNodeDurationUnitComboBox.addItem("DAYS", "D");
 	lymphNodeDurationUnitComboBox.addItem("WEEKS", "W");
 	lymphNodeDurationUnitComboBox.addItem("MONTHS", "M");
-	lymphNodeDurationUnitComboBox.addItem("YEARS", "Y");
 	lymphNodeDurationHorizontalPanel.add(lymphNodeDurationUnitComboBox);
 	decoratedStackPanel.add(tbHistoryFlexTable, "TB History", false);
 	tbHistoryFlexTable.setSize("100%", "100%");
@@ -604,7 +599,8 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 		}*/
 		else if(currentPatient.getDiseaseSuspected()==null)
 		{
-		    currentPatient.setDiseaseSuspected("TB");
+		    String diseaseSuspected = currentPatient.getDiseaseSuspected() + "TB";
+		    currentPatient.setDiseaseSuspected(diseaseSuspected);
 		}
 		/*else
 		    currentPatient.setDiseaseSuspected("TB");*/
@@ -750,8 +746,11 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 		    }
 
 		    public void onFailure(Throwable caught)
+
 		    {
+
 			caught.printStackTrace();
+
 		    }
 
 		});
@@ -759,6 +758,7 @@ public class TBScreeningComposite extends Composite implements ClickHandler, Cha
 	    {
 		e.printStackTrace();
 	    }
+
 	}
 	else if (sender == saveButton)
 	{

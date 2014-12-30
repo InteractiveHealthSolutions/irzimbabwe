@@ -18,7 +18,7 @@ public class Visit implements java.io.Serializable
 	private Integer	visitNo;
 	private String	patientId;
 	private String	visitPurpose;
-	private Boolean	diseaseConfirmed;
+	private String	otherPurpose;
 	private Date	visitDate;
 
 	public Visit ()
@@ -32,11 +32,11 @@ public class Visit implements java.io.Serializable
 		this.visitPurpose = visitPurpose;
 	}
 
-	public Visit (String patientId, String visitPurpose, Boolean disease_confirmed, Date visitDate)
+	public Visit (String patientId, String visitPurpose, String otherPurpose, Date visitDate)
 	{
 		this.patientId = patientId;
 		this.visitPurpose = visitPurpose;
-		this.diseaseConfirmed = disease_confirmed;
+		this.otherPurpose = otherPurpose;
 		this.visitDate = visitDate;
 	}
 
@@ -70,14 +70,14 @@ public class Visit implements java.io.Serializable
 		this.visitPurpose = visitPurpose;
 	}
 
-	public Boolean getDiseaseConfirmed ()
+	public String getOtherPurpose ()
 	{
-		return this.diseaseConfirmed;
+		return this.otherPurpose;
 	}
 
-	public void setDiseaseConfirmed (Boolean disease_confirmed)
+	public void setOtherPurpose (String otherPurpose)
 	{
-		this.diseaseConfirmed = disease_confirmed;
+		this.otherPurpose = otherPurpose;
 	}
 
 	public Date getVisitDate ()
@@ -96,6 +96,6 @@ public class Visit implements java.io.Serializable
 	@Override
 	public String toString ()
 	{
-		return visitNo + ", " + patientId + ", " + visitPurpose + ", " + diseaseConfirmed + ", " + visitDate;
+		return visitNo + ", " + patientId + ", " + visitPurpose + ", " + otherPurpose + ", " + visitDate;
 	}
 }

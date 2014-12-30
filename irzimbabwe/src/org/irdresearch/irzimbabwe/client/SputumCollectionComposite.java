@@ -13,11 +13,9 @@ import org.irdresearch.irzimbabwe.shared.model.EncounterId;
 import org.irdresearch.irzimbabwe.shared.model.EncounterResults;
 import org.irdresearch.irzimbabwe.shared.model.EncounterResultsId;
 import org.irdresearch.irzimbabwe.shared.model.Patient;
-import org.irdresearch.irzimbabwe.shared.model.Person;
 import org.irdresearch.irzimbabwe.shared.model.SputumTest;
 import org.irdresearch.irzimbabwe.shared.model.SputumTestId;
 import org.irdresearch.irzimbabwe.shared.model.User;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -83,7 +81,6 @@ public class SputumCollectionComposite extends Composite implements ClickHandler
     private ListBox sampleCollectedComboBox = new ListBox();
     private ListBox totalSamplesCollectedComboBox = new ListBox();
     private ListBox siteNameComboBox = new ListBox();
-    protected Person currentPerson;
 
     public SputumCollectionComposite()
     {
@@ -338,87 +335,63 @@ public class SputumCollectionComposite extends Composite implements ClickHandler
 	{
 	    try
 	    {
-		load(true);
+		load(false);
 		final String clientId = IRZClient.get(clientIdTextBox);
-		// /////////////////////////////////////////////////////////////////////////////////////////////
-		service.exists("person", "pid='" + clientId + "'", new AsyncCallback<Boolean>() {
-		    public void onSuccess(Boolean result)
-		    {
-			if (result)
+		try
+		{
+		    service.findPatient(clientId, new AsyncCallback<Patient>() {
+			public void onSuccess(Patient result)
 			{
+			    currentPatient = result;
+			    String diseaseSuspected = currentPatient.getDiseaseSuspected();
+			    if ((currentPatient == null || currentPatient.getDiseaseSuspected() == null) && !currentPatient.getDiseaseSuspected().equals("TB"))
+			    {
+				Window.alert(CustomMessage.getErrorMessage(ErrorType.ID_INVALID));
+				return;
+			    }
+			    else if (diseaseSuspected.contains(";"))// multiple
+			    // visit purposes went through tb screening
+			    {
+				String[] getDisease = diseaseSuspected.split(";");
+				if (getDisease[1].equals("TB"))
+				{
+				    Window.alert(" visit purpose of patient is: "+getDisease[0]+CustomMessage.getInfoMessage(InfoType.ID_VALID));
+				}
+
+			    }
+			    else
+				Window.alert(CustomMessage.getInfoMessage(InfoType.ID_VALID));
 			    try
 			    {
-				service.findPatient(clientId, new AsyncCallback<Patient>() {
-				    public void onSuccess(Patient result)
+				service.getObject("sputum_test", "ifnull(max(sample_no), 0)", "patient_id='" + clientId + "'", new AsyncCallback<String>() {
+				    public void onSuccess(String result)
 				    {
-					currentPatient = result;
-					load(false);
-					if (currentPatient == null)
-					{
-					    Window.alert("Enter Client Demographics:" + CustomMessage.getErrorMessage(ErrorType.ID_INVALID));
-					    currentPerson = null;
-					}
-					else
-					{
-
-					    Window.alert(CustomMessage.getInfoMessage(InfoType.ID_VALID));
-					    try
-					    {
-						service.getObject("sputum_test", "ifnull(max(sample_no), 0)", "patient_id='" + IRZClient.get(clientIdTextBox) + "'", new AsyncCallback<String>() {
-						    public void onSuccess(String result)
-						    {
-							currentSampleCount = Integer.parseInt(result);
-						    }
-
-						    public void onFailure(Throwable caught)
-						    {
-							caught.printStackTrace();
-							load(false);
-						    }
-
-						});
-					    } catch(Exception e)
-					    {
-						e.printStackTrace();
-						load(false);
-					    }
-					}
+					currentSampleCount = Integer.parseInt(result);
 				    }
 
 				    public void onFailure(Throwable caught)
 				    {
-					caught.printStackTrace();
-					load(false);
 				    }
 				});
 			    } catch(Exception e)
 			    {
 				e.printStackTrace();
-				load(false);
 			    }
-
 			}
-			else
+
+			public void onFailure(Throwable caught)
 			{
-			    load(false);
-			    Window.alert("Enter Client Demographics:" + CustomMessage.getErrorMessage(ErrorType.ID_INVALID));
-
+			    caught.printStackTrace();
 			}
-		    }
-		    public void onFailure(Throwable caught)
-		    {
-			caught.printStackTrace();
-			load(false);
-
-		    }
-
-		});
+		    });
+		} catch(Exception e)
+		{
+		    e.printStackTrace();
+		}
 	    } catch(Exception e)
 	    {
 		e.printStackTrace();
-		load(false);
 	    }
-
 	}
 	else if (sender == saveButton)
 	{
@@ -435,7 +408,6 @@ public class SputumCollectionComposite extends Composite implements ClickHandler
 	{
 	    MainMenuComposite.clear();
 	}
-
     }
 
     @Override

@@ -15,8 +15,6 @@ import org.irdresearch.irzimbabwe.shared.model.EncounterResults;
 import org.irdresearch.irzimbabwe.shared.model.EncounterResultsId;
 import org.irdresearch.irzimbabwe.shared.model.Person;
 import org.irdresearch.irzimbabwe.shared.model.User;
-import org.irdresearch.irzimbabwe.shared.model.Visit;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -252,7 +250,7 @@ public class PatientComposite extends Composite implements ClickHandler, ChangeH
 			    }
 			    else
 			    {
-				encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "ATTRIBUTE"), attribute[1]));
+				encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "ATTRIBUTE"), attribute[0]));
 				encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "VALUE"), value));
 				try
 				{
@@ -299,7 +297,7 @@ public class PatientComposite extends Composite implements ClickHandler, ChangeH
 	    }
 	    else if (parts.length == 1)// "patient:hiv_status"
 	    {
-		encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "ATTRIBUTE"), attribute[1]));
+		encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "ATTRIBUTE"), attribute[0]));
 		encounterResults.add(new EncounterResults(new EncounterResultsId(eId, clientId, pid2, formName, "VALUE"), value));
 		try
 		{
@@ -307,123 +305,6 @@ public class PatientComposite extends Composite implements ClickHandler, ChangeH
 		    String tableName = tableInfo[0];
 		    String identifierName = tableName.equals("person") ? "pid":"patient_id";
 		    String columnName = tableInfo[1];
-		    if (columnName.equals("hiv_status"))
-		    {
-			if (value.equals("POSITIVE"))
-			{
-			    try
-			    {
-				service.findParticularVisit(clientId, "HIV", new AsyncCallback<Visit>() {
-
-				    @Override
-				    public void onFailure(Throwable caught)
-				    {
-					caught.printStackTrace();
-
-				    }
-
-				    @Override
-				    public void onSuccess(Visit result)
-				    {
-					if (result != null)
-					{
-					    result.setDiseaseConfirmed(true);
-					    try
-					    {
-						service.updateVisit(result, new AsyncCallback<Boolean>() {
-
-						    @Override
-						    public void onFailure(Throwable caught)
-						    {
-							caught.printStackTrace();
-							load(false);
-						    }
-
-						    @Override
-						    public void onSuccess(Boolean result)
-						    {
-							if (result)
-							{
-							    System.out.println("Visit Purpose HIV Updated");
-							}
-							else
-							    System.out.println("Visit Purpose HIV NOT FOUND");
-
-						    }
-
-						});
-					    } catch(Exception e)
-					    {
-						System.out.println("Visit Purpose HIV Update CAUGHT IN CLIENT EDIT");
-						e.printStackTrace();
-					    }
-					}
-				    }
-
-				});
-			    } catch(Exception e)
-			    {
-				e.printStackTrace();
-			    }
-			}
-			else
-			{
-			    try
-			    {
-				service.findParticularVisit(clientId, "HIV", new AsyncCallback<Visit>() {
-
-				    @Override
-				    public void onFailure(Throwable caught)
-				    {
-					caught.printStackTrace();
-				    }
-
-				    @Override
-				    public void onSuccess(Visit result)
-				    {
-					if (result != null)
-					{
-					    result.setDiseaseConfirmed(false);
-					    try
-					    {
-						service.updateVisit(result, new AsyncCallback<Boolean>() {
-
-						    @Override
-						    public void onFailure(Throwable caught)
-						    {
-							caught.printStackTrace();
-							load(false);
-						    }
-
-						    @Override
-						    public void onSuccess(Boolean result)
-						    {
-							if (result)
-							{
-							    System.out.println("Visit Purpose HIV Updated");
-							}
-							else
-							    System.out.println("Visit Purpose HIV NOT FOUND");
-
-						    }
-
-						});
-					    } catch(Exception e)
-					    {
-						System.out.println("Visit Purpose HIV Update CAUGHT IN CLIENT EDIT");
-						e.printStackTrace();
-					    }
-					}
-				    }
-
-				});
-			    } catch(Exception e)
-			    {
-				e.printStackTrace();
-			    }
-
-			}
-		    }
 		    String query = "update " + tableName + " set " + columnName + " = '" + value + "' where " + identifierName + " = '" + clientId + "'";
 		    service.savePatientEdit(query, encounter, encounterResults.toArray(new EncounterResults[] {}), new AsyncCallback<String>() {
 			public void onSuccess(String result)

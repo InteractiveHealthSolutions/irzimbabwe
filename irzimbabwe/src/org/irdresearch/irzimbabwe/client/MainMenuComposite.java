@@ -57,7 +57,7 @@ public class MainMenuComposite extends Composite
 	private MenuItem				visitPurposeMenuItem			= new MenuItem ("Client's Purpose of Visit", false, (Command) null);
 	private MenuItem				clientDemographicsMenuItem		= new MenuItem ("Client's Demographics", false, (Command) null);
 	private MenuItem				tbScreeningMenuItem				= new MenuItem ("TB Screening Results", false, (Command) null);
-	private MenuItem				registrationMenuItem			= new MenuItem ("Client Registration Form", false, (Command) null);
+	private MenuItem				registrationMenuItem			= new MenuItem ("TB/MC Registration", false, (Command) null);
 	private MenuItem				sputumCollectionMenuItem		= new MenuItem ("Sputum Collection", false, (Command) null);
 	private MenuItem				sputumRegistrationMenuItem		= new MenuItem ("Sputum Registration", false, (Command) null);
 	private MenuItem				smearResultsMenuItem			= new MenuItem ("Smear Results", false, (Command) null);

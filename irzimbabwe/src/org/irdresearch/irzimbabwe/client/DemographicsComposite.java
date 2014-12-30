@@ -252,7 +252,9 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 			{
 				if (result.equals ("SUCCESS"))
 				{
-					Window.alert(CustomMessage.getInfoMessage (InfoType.INSERTED));
+					Window.alert
+
+					(CustomMessage.getInfoMessage (InfoType.INSERTED));
 					clearUp ();
 					load (false);
 				}
@@ -297,7 +299,9 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 						{
 							public void onSuccess (User result)
 							{
-								rights.setRoleRights(IRZ.getCurrentRole (), userRights);
+								rights.setRoleRights
+
+								(IRZ.getCurrentRole (), userRights);
 								boolean hasAccess =
 
 								rights.getAccess (AccessType.INSERT) |
@@ -376,7 +380,8 @@ public class DemographicsComposite extends Composite implements ClickHandler, Va
 														{
 															if (result)
 															{
-																boolean answer = Window.confirm ("Client Information Already exists! Are you sure you want to update?");
+																boolean answer = Window
+																		.confirm ("Client Information Already exists! Are you sure you want to update?");
 																if (!answer)
 																{
 																	load (false);

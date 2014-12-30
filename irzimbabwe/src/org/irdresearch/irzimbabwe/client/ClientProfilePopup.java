@@ -185,33 +185,22 @@ public class ClientProfilePopup extends PopupPanel implements IForm
 	 * TAB 1 Patient demographics and his encounter along with encounter
 	 * elements
 	 */
+	// TODO Auto-generated method stub
 	final StringBuilder patientInfo = new StringBuilder();
-	patientInfo.append("CLIENT ID: " + currentClient.getPatientId());
-	patientInfo.append("\n"+"NAME: " + currentPerson.getFirstName() + " " + currentPerson.getLastName());
-	patientInfo.append("\n"+"AGE: " + currentPerson.getApproximateAge());
+	patientInfo.append("ID: " + currentClient.getPatientId() + "\t\t");
+	patientInfo.append("Name: " + currentPerson.getFirstName() + " " + currentPerson.getLastName() + "\t\t");
+	patientInfo.append("Age: " + currentPerson.getApproximateAge() + "\n");
 	if (currentPerson.getMobile() == null || currentPerson.getMobile() == null)
-	    patientInfo.append("\n"+"MOBILE: " + "Not provided");
+	    patientInfo.append("Mobile: " + "Not provided" + "\t\t");
 	else
-	    patientInfo.append("\n"+"MOBILE: " + currentPerson.getMobile());
+	    patientInfo.append("Mobile: " + currentPerson.getMobile() + "\t\t");
 	try
 	{
-	    service.findAllVisits(currentClient.getPatientId(), new AsyncCallback<Visit[]>() {
-		public void onSuccess(Visit[] result)
+	    service.findVisit(currentClient.getPatientId(), new AsyncCallback<Visit>() {
+		public void onSuccess(Visit result)
 		{
-		    if(result.length!=0)
-		    {
-			String visitPurpose="";
-			for(int i=0;i<result.length;i++)
-			{
-			    if(!visitPurpose.equals(""))
-				visitPurpose=visitPurpose.concat(", ").concat(IRZ.getDefinitionValue("VISIT_PURPOSE", result[i].getVisitPurpose()));
-			    else
-				visitPurpose=IRZ.getDefinitionValue("VISIT_PURPOSE", result[i].getVisitPurpose());
-			}    
-			patientInfo.append("\n"+"VISIT PURPOSE: " + visitPurpose);    
-			patientInfo.append("\n"+"VISIT DATE: " + DateTimeUtil.getFormattedDate(result[0].getVisitDate(), DateTimeUtil.SQL_DATE) + "\n");
-		    }
-		    
+		    patientInfo.append("Visit Purpose: " + result.getVisitPurpose() + "\t");
+		    patientInfo.append("Visit Date: " + DateTimeUtil.getFormattedDate(result.getVisitDate(), DateTimeUtil.SQL_DATE) + "\n");
 		    patientDemogTextArea.setText(patientInfo.toString());
 		}
 
